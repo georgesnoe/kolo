@@ -9,54 +9,185 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppTableauDeBordRouteImport } from './routes/_app/tableau-de-bord'
+import { Route as AppParametresRouteImport } from './routes/_app/parametres'
+import { Route as authInscriptionRouteImport } from './routes/(auth)/inscription'
+import { Route as authConnexionRouteImport } from './routes/(auth)/connexion'
+import { Route as AppTontinesIndexRouteImport } from './routes/_app/tontines/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppTontinesIdRouteImport } from './routes/_app/tontines/$id'
 
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppTableauDeBordRoute = AppTableauDeBordRouteImport.update({
+  id: '/tableau-de-bord',
+  path: '/tableau-de-bord',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppParametresRoute = AppParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const authInscriptionRoute = authInscriptionRouteImport.update({
+  id: '/(auth)/inscription',
+  path: '/inscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authConnexionRoute = authConnexionRouteImport.update({
+  id: '/(auth)/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppTontinesIndexRoute = AppTontinesIndexRouteImport.update({
+  id: '/tontines/',
+  path: '/tontines/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTontinesIdRoute = AppTontinesIdRouteImport.update({
+  id: '/tontines/$id',
+  path: '/tontines/$id',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/connexion': typeof authConnexionRoute
+  '/inscription': typeof authInscriptionRoute
+  '/parametres': typeof AppParametresRoute
+  '/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/tontines/': typeof AppTontinesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/connexion': typeof authConnexionRoute
+  '/inscription': typeof authInscriptionRoute
+  '/parametres': typeof AppParametresRoute
+  '/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/tontines': typeof AppTontinesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteRouteWithChildren
+  '/(auth)/connexion': typeof authConnexionRoute
+  '/(auth)/inscription': typeof authInscriptionRoute
+  '/_app/parametres': typeof AppParametresRoute
+  '/_app/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/_app/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_app/tontines/': typeof AppTontinesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/connexion'
+    | '/inscription'
+    | '/parametres'
+    | '/tableau-de-bord'
+    | '/tontines/$id'
+    | '/api/auth/$'
+    | '/tontines/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/auth/$'
-  id: '__root__' | '/' | '/api/auth/$'
+  to:
+    | '/'
+    | '/connexion'
+    | '/inscription'
+    | '/parametres'
+    | '/tableau-de-bord'
+    | '/tontines/$id'
+    | '/api/auth/$'
+    | '/tontines'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/(auth)/connexion'
+    | '/(auth)/inscription'
+    | '/_app/parametres'
+    | '/_app/tableau-de-bord'
+    | '/_app/tontines/$id'
+    | '/api/auth/$'
+    | '/_app/tontines/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  authConnexionRoute: typeof authConnexionRoute
+  authInscriptionRoute: typeof authInscriptionRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/tableau-de-bord': {
+      id: '/_app/tableau-de-bord'
+      path: '/tableau-de-bord'
+      fullPath: '/tableau-de-bord'
+      preLoaderRoute: typeof AppTableauDeBordRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/parametres': {
+      id: '/_app/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof AppParametresRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/(auth)/inscription': {
+      id: '/(auth)/inscription'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof authInscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/connexion': {
+      id: '/(auth)/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof authConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/tontines/': {
+      id: '/_app/tontines/'
+      path: '/tontines'
+      fullPath: '/tontines/'
+      preLoaderRoute: typeof AppTontinesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -65,11 +196,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/tontines/$id': {
+      id: '/_app/tontines/$id'
+      path: '/tontines/$id'
+      fullPath: '/tontines/$id'
+      preLoaderRoute: typeof AppTontinesIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
+interface AppRouteRouteChildren {
+  AppParametresRoute: typeof AppParametresRoute
+  AppTableauDeBordRoute: typeof AppTableauDeBordRoute
+  AppTontinesIdRoute: typeof AppTontinesIdRoute
+  AppTontinesIndexRoute: typeof AppTontinesIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppParametresRoute: AppParametresRoute,
+  AppTableauDeBordRoute: AppTableauDeBordRoute,
+  AppTontinesIdRoute: AppTontinesIdRoute,
+  AppTontinesIndexRoute: AppTontinesIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  authConnexionRoute: authConnexionRoute,
+  authInscriptionRoute: authInscriptionRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
