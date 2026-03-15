@@ -1,3 +1,5 @@
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
+dist
+.output
+.tanstack
+src/core/db/generated
+src/routeTree.gen.ts
