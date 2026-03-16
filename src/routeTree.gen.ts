@@ -18,6 +18,8 @@ import { Route as authConnexionRouteImport } from './routes/(auth)/connexion'
 import { Route as AppTontinesIndexRouteImport } from './routes/_app/tontines/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTontinesIdRouteImport } from './routes/_app/tontines/$id'
+import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
+import { Route as AppStatistiquesRouteImport } from './routes/_app/statistiques'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -63,13 +65,25 @@ const AppTontinesIdRoute = AppTontinesIdRouteImport.update({
   path: '/tontines/$id',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppTransactionsRoute = AppTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppStatistiquesRoute = AppStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/connexion': typeof authConnexionRoute
   '/inscription': typeof authInscriptionRoute
   '/parametres': typeof AppParametresRoute
+  '/statistiques': typeof AppStatistiquesRoute
   '/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/transactions': typeof AppTransactionsRoute
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines/': typeof AppTontinesIndexRoute
@@ -79,7 +93,9 @@ export interface FileRoutesByTo {
   '/connexion': typeof authConnexionRoute
   '/inscription': typeof authInscriptionRoute
   '/parametres': typeof AppParametresRoute
+  '/statistiques': typeof AppStatistiquesRoute
   '/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/transactions': typeof AppTransactionsRoute
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines': typeof AppTontinesIndexRoute
@@ -91,7 +107,9 @@ export interface FileRoutesById {
   '/(auth)/connexion': typeof authConnexionRoute
   '/(auth)/inscription': typeof authInscriptionRoute
   '/_app/parametres': typeof AppParametresRoute
+  '/_app/statistiques': typeof AppStatistiquesRoute
   '/_app/tableau-de-bord': typeof AppTableauDeBordRoute
+  '/_app/transactions': typeof AppTransactionsRoute
   '/_app/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/tontines/': typeof AppTontinesIndexRoute
@@ -103,7 +121,9 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/inscription'
     | '/parametres'
+    | '/statistiques'
     | '/tableau-de-bord'
+    | '/transactions'
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines/'
@@ -113,7 +133,9 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/inscription'
     | '/parametres'
+    | '/statistiques'
     | '/tableau-de-bord'
+    | '/transactions'
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines'
@@ -124,7 +146,9 @@ export interface FileRouteTypes {
     | '/(auth)/connexion'
     | '/(auth)/inscription'
     | '/_app/parametres'
+    | '/_app/statistiques'
     | '/_app/tableau-de-bord'
+    | '/_app/transactions'
     | '/_app/tontines/$id'
     | '/api/auth/$'
     | '/_app/tontines/'
@@ -203,19 +227,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTontinesIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/transactions': {
+      id: '/_app/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AppTransactionsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/statistiques': {
+      id: '/_app/statistiques'
+      path: '/statistiques'
+      fullPath: '/statistiques'
+      preLoaderRoute: typeof AppStatistiquesRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
   AppParametresRoute: typeof AppParametresRoute
+  AppStatistiquesRoute: typeof AppStatistiquesRoute
   AppTableauDeBordRoute: typeof AppTableauDeBordRoute
+  AppTransactionsRoute: typeof AppTransactionsRoute
   AppTontinesIdRoute: typeof AppTontinesIdRoute
   AppTontinesIndexRoute: typeof AppTontinesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppParametresRoute: AppParametresRoute,
+  AppStatistiquesRoute: AppStatistiquesRoute,
   AppTableauDeBordRoute: AppTableauDeBordRoute,
+  AppTransactionsRoute: AppTransactionsRoute,
   AppTontinesIdRoute: AppTontinesIdRoute,
   AppTontinesIndexRoute: AppTontinesIndexRoute,
 }
