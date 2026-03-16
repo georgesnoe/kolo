@@ -30,6 +30,8 @@ function ConnexionPage() {
         email,
         password,
       });
+      // Small delay to ensure cookie is set before redirect
+      await new Promise((resolve) => setTimeout(resolve, 100));
       window.location.href = "/tableau-de-bord";
     } catch (err) {
       setError("Email ou mot de passe incorrect");

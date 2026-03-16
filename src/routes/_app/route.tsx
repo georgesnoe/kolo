@@ -7,6 +7,8 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: async () => {
+    // Small delay to ensure cookies are available on page refresh
+    await new Promise((resolve) => setTimeout(resolve, 50));
     const session = await authClient.getSession();
     if (!session?.data?.user) {
       throw redirect({ to: "/connexion" });

@@ -261,6 +261,7 @@ export function TontineDetail({ tontine }: TontineDetailProps) {
                   status={payment.status}
                   paidAt={payment.paidAt}
                   canMarkPaid={tontine.isCreator}
+                  tontineId={tontine.id}
                 />
               ))}
               {nextCycle.payments.length === 0 && (
