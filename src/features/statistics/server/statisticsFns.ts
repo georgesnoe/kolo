@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq, and, sql, count, sum } from "drizzle-orm";
+import { eq, and, sql, count, sum, gte, lte } from "drizzle-orm";
 import { db } from "@/core/db/db";
 import {
   tontine,
@@ -38,17 +38,27 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
   async (): Promise<Statistics> => {
     const session = await getAuthSession();
 
-    // Get user's member IDs
-    const userMembers = await db
-      .select({ id: tontineMember.id })
+    // Get tontines where user is creator or member
+    const creatorTontines = await db
+      .select({ id: tontine.id })
+      .from(tontine)
+      .where(eq(tontine.creatorId, session.user.id));
+
+    const memberTontines = await db
+      .select({ tontineId: tontineMember.tontineId })
       .from(tontineMember)
       .where(eq(tontineMember.userId, session.user.id));
 
-    const userMemberIds = userMembers.map((m) => m.id);
+    const tontineIds = [
+      ...new Set([
+        ...creatorTontines.map((t) => t.id),
+        ...memberTontines.map((m) => m.tontineId),
+      ]),
+    ];
 
-    // Total saved (sum of all paid payments where user is involved)
+    // Total saved (sum of all paid payments for user's tontines)
     let totalSaved = 0;
-    if (userMemberIds.length > 0) {
+    if (tontineIds.length > 0) {
       const paidResult = await db
         .select({ total: sum(tontinePayment.amount) })
         .from(tontinePayment)
@@ -56,23 +66,13 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .where(
           and(
             eq(tontinePayment.status, "paid"),
-            sql`(${tontinePayment.memberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)}) OR ${tontineCycle.recipientMemberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)}))`
+            sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
           )
         );
       totalSaved = parseFloat(paidResult[0]?.total || "0");
     }
 
     // Active members across user's tontines
-    const userTontines = await db
-      .select({ id: tontine.id })
-      .from(tontine)
-      .leftJoin(tontineMember, eq(tontine.id, tontineMember.tontineId))
-      .where(
-        sql`${tontine.creatorId} = ${session.user.id} OR ${tontineMember.userId} = ${session.user.id}`
-      );
-
-    const tontineIds = [...new Set(userTontines.map((t) => t.id))];
-
     let activeMembers = 0;
     if (tontineIds.length > 0) {
       const memberResult = await db
@@ -101,12 +101,13 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
 
     // On-time payment rate
     let onTimeRate: number | null = null;
-    if (userMemberIds.length > 0) {
+    if (tontineIds.length > 0) {
       const totalPayments = await db
         .select({ count: count() })
         .from(tontinePayment)
+        .innerJoin(tontineCycle, eq(tontinePayment.cycleId, tontineCycle.id))
         .where(
-          sql`${tontinePayment.memberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)})`
+          sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
         );
 
       const onTimePayments = await db
@@ -115,7 +116,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .innerJoin(tontineCycle, eq(tontinePayment.cycleId, tontineCycle.id))
         .where(
           and(
-            sql`${tontinePayment.memberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)})`,
+            sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`,
             eq(tontinePayment.status, "paid"),
             sql`${tontinePayment.paidAt} <= ${tontineCycle.dueDate}`
           )
@@ -148,7 +149,9 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
           );
 
         const total = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
-        byTontine.push({ name: t.name, totalPaid: total, count: payments.length });
+        if (total > 0) {
+          byTontine.push({ name: t.name, totalPaid: total, count: payments.length });
+        }
       }
     }
 
@@ -158,10 +161,10 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
       const date = new Date();
       date.setMonth(date.getMonth() - i);
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-      const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
 
       let amount = 0;
-      if (userMemberIds.length > 0) {
+      if (tontineIds.length > 0) {
         const monthPayments = await db
           .select({ amount: tontinePayment.amount })
           .from(tontinePayment)
@@ -169,9 +172,9 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
           .where(
             and(
               eq(tontinePayment.status, "paid"),
-              sql`${tontinePayment.paidAt} >= ${monthStart.toISOString()}`,
-              sql`${tontinePayment.paidAt} <= ${monthEnd.toISOString()}`,
-              sql`(${tontinePayment.memberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)}) OR ${tontineCycle.recipientMemberId} IN (${sql.join(userMemberIds.map(id => sql`${id}`), sql`, `)}))`
+              sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`,
+              gte(tontinePayment.paidAt, monthStart),
+              lte(tontinePayment.paidAt, monthEnd)
             )
           );
         amount = monthPayments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
