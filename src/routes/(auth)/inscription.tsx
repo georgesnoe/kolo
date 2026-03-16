@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/core/auth/auth-client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/(auth)/inscription")({
 });
 
 function InscriptionPage() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +33,8 @@ function InscriptionPage() {
         email,
         password,
       });
-      window.location.href = "/tableau-de-bord";
+      // Use router navigation to preserve client state
+      navigate({ to: "/tableau-de-bord", replace: true });
     } catch (err) {
       setError("Erreur lors de l'inscription. Veuillez réessayer.");
     } finally {

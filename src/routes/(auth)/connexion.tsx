@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/core/auth/auth-client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/(auth)/connexion")({
 });
 
 function ConnexionPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,9 +31,8 @@ function ConnexionPage() {
         email,
         password,
       });
-      // Small delay to ensure cookie is set before redirect
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      window.location.href = "/tableau-de-bord";
+      // Use router navigation to preserve client state
+      navigate({ to: "/tableau-de-bord", replace: true });
     } catch (err) {
       setError("Email ou mot de passe incorrect");
     } finally {

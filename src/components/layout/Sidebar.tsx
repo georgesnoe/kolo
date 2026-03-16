@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   IconLayoutDashboard,
   IconUsers,
@@ -60,11 +60,12 @@ export function Sidebar({
   onMobileClose,
 }: SidebarProps) {
   const router = useRouterState();
+  const navigate = useNavigate();
   const currentPath = router.location.pathname;
 
   const handleLogout = async () => {
     await authClient.signOut();
-    window.location.href = "/connexion";
+    navigate({ to: "/connexion", replace: true });
   };
 
   const sidebarContent = (
