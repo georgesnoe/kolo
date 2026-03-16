@@ -1,4 +1,4 @@
-import { GoogleGenAI, type Tool, type GenerateContentConfig, ThinkingLevel } from '@google/genai';
+import { GoogleGenAI, type Tool, type GenerateContentConfig } from '@google/genai';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY as string
@@ -7,13 +7,10 @@ const ai = new GoogleGenAI({
 const tools: Tool[] = [{ googleSearch: {} }]
 
 const config: GenerateContentConfig = {
-  thinkingConfig: {
-    thinkingLevel: ThinkingLevel.HIGH
-  },
   tools
 };
 
-const model = "gemma-2-27b-it";
+const model = "gemini-2.0-flash";
 
 export async function askCoach(userMessage: string): Promise<string> {
   const contents = [
