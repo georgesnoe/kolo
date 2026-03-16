@@ -1,26 +1,18 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { authClient } from "@/core/auth/auth-client";
-import { auth } from "@/core/auth/auth";
+import { getSessionFromServer } from "@/core/auth/server-fns";
 import { AppShell } from "@/components/layout/AppShell";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getRequest } from "@tanstack/react-start/server";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: async () => {
-    // During SSR, use server-side auth with request headers
+    // During SSR, use server function to check session with request headers
     if (typeof window === "undefined") {
-      try {
-        const request = getRequest();
-        if (request) {
-          const session = await auth.api.getSession({ headers: request.headers });
-          if (session?.user) {
-            return { session: { user: session.user, session: session.session } };
-          }
-        }
-      } catch {
-        // SSR auth failed, will redirect client-side
+      const serverSession = await getSessionFromServer();
+      if (serverSession?.user) {
+        return { session: serverSession };
       }
       throw redirect({ to: "/connexion" });
     }
