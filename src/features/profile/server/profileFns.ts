@@ -72,7 +72,7 @@ export const uploadAvatar = createServerFn({ method: "POST" })
       .where(eq(profile.userId, session.user.id))
       .limit(1);
 
-    // Delete old avatar if exists
+    // Delete old avatar if exists (stored as pathname)
     if (currentProfile?.avatarBlobKey) {
       try {
         await deleteFile(currentProfile.avatarBlobKey);
@@ -85,12 +85,12 @@ export const uploadAvatar = createServerFn({ method: "POST" })
     const buffer = Buffer.from(data.file, "base64");
     const pathname = `avatars/${session.user.id}-${Date.now()}`;
 
-    const blobKey = await uploadFile(pathname, buffer, data.contentType);
+    const result = await uploadFile(pathname, buffer, data.contentType);
 
     const [updated] = await db
       .update(profile)
       .set({
-        avatarBlobKey: blobKey,
+        avatarBlobKey: result.url,
         updatedAt: new Date(),
       })
       .where(eq(profile.userId, session.user.id))

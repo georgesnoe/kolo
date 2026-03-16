@@ -11,16 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
 import { Route as AppTableauDeBordRouteImport } from './routes/_app/tableau-de-bord'
+import { Route as AppStatistiquesRouteImport } from './routes/_app/statistiques'
 import { Route as AppParametresRouteImport } from './routes/_app/parametres'
+import { Route as AppCoachRouteImport } from './routes/_app/coach'
 import { Route as authInscriptionRouteImport } from './routes/(auth)/inscription'
 import { Route as authConnexionRouteImport } from './routes/(auth)/connexion'
 import { Route as AppTontinesIndexRouteImport } from './routes/_app/tontines/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTontinesIdRouteImport } from './routes/_app/tontines/$id'
-import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
-import { Route as AppStatistiquesRouteImport } from './routes/_app/statistiques'
-import { Route as AppCoachRouteImport } from './routes/_app/coach'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -31,14 +31,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTransactionsRoute = AppTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppTableauDeBordRoute = AppTableauDeBordRouteImport.update({
   id: '/tableau-de-bord',
   path: '/tableau-de-bord',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppStatistiquesRoute = AppStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppParametresRoute = AppParametresRouteImport.update({
   id: '/parametres',
   path: '/parametres',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppCoachRoute = AppCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const authInscriptionRoute = authInscriptionRouteImport.update({
@@ -66,26 +81,12 @@ const AppTontinesIdRoute = AppTontinesIdRouteImport.update({
   path: '/tontines/$id',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppTransactionsRoute = AppTransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppStatistiquesRoute = AppStatistiquesRouteImport.update({
-  id: '/statistiques',
-  path: '/statistiques',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppCoachRoute = AppCoachRouteImport.update({
-  id: '/coach',
-  path: '/coach',
-  getParentRoute: () => AppRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/connexion': typeof authConnexionRoute
   '/inscription': typeof authInscriptionRoute
+  '/coach': typeof AppCoachRoute
   '/parametres': typeof AppParametresRoute
   '/statistiques': typeof AppStatistiquesRoute
   '/tableau-de-bord': typeof AppTableauDeBordRoute
@@ -93,12 +94,12 @@ export interface FileRoutesByFullPath {
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines/': typeof AppTontinesIndexRoute
-  '/coach': typeof AppCoachRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/connexion': typeof authConnexionRoute
   '/inscription': typeof authInscriptionRoute
+  '/coach': typeof AppCoachRoute
   '/parametres': typeof AppParametresRoute
   '/statistiques': typeof AppStatistiquesRoute
   '/tableau-de-bord': typeof AppTableauDeBordRoute
@@ -106,7 +107,6 @@ export interface FileRoutesByTo {
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines': typeof AppTontinesIndexRoute
-  '/coach': typeof AppCoachRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,6 +114,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/(auth)/connexion': typeof authConnexionRoute
   '/(auth)/inscription': typeof authInscriptionRoute
+  '/_app/coach': typeof AppCoachRoute
   '/_app/parametres': typeof AppParametresRoute
   '/_app/statistiques': typeof AppStatistiquesRoute
   '/_app/tableau-de-bord': typeof AppTableauDeBordRoute
@@ -121,7 +122,6 @@ export interface FileRoutesById {
   '/_app/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/tontines/': typeof AppTontinesIndexRoute
-  '/_app/coach': typeof AppCoachRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/connexion'
     | '/inscription'
+    | '/coach'
     | '/parametres'
     | '/statistiques'
     | '/tableau-de-bord'
@@ -136,12 +137,12 @@ export interface FileRouteTypes {
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines/'
-    | '/coach'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/connexion'
     | '/inscription'
+    | '/coach'
     | '/parametres'
     | '/statistiques'
     | '/tableau-de-bord'
@@ -149,13 +150,13 @@ export interface FileRouteTypes {
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines'
-    | '/coach'
   id:
     | '__root__'
     | '/'
     | '/_app'
     | '/(auth)/connexion'
     | '/(auth)/inscription'
+    | '/_app/coach'
     | '/_app/parametres'
     | '/_app/statistiques'
     | '/_app/tableau-de-bord'
@@ -163,7 +164,6 @@ export interface FileRouteTypes {
     | '/_app/tontines/$id'
     | '/api/auth/$'
     | '/_app/tontines/'
-    | '/_app/coach'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/transactions': {
+      id: '/_app/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AppTransactionsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/tableau-de-bord': {
       id: '/_app/tableau-de-bord'
       path: '/tableau-de-bord'
@@ -197,11 +204,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTableauDeBordRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/statistiques': {
+      id: '/_app/statistiques'
+      path: '/statistiques'
+      fullPath: '/statistiques'
+      preLoaderRoute: typeof AppStatistiquesRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/parametres': {
       id: '/_app/parametres'
       path: '/parametres'
       fullPath: '/parametres'
       preLoaderRoute: typeof AppParametresRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/coach': {
+      id: '/_app/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof AppCoachRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/(auth)/inscription': {
@@ -239,48 +260,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTontinesIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/transactions': {
-      id: '/_app/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof AppTransactionsRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/statistiques': {
-      id: '/_app/statistiques'
-      path: '/statistiques'
-      fullPath: '/statistiques'
-      preLoaderRoute: typeof AppStatistiquesRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/coach': {
-      id: '/_app/coach'
-      path: '/coach'
-      fullPath: '/coach'
-      preLoaderRoute: typeof AppCoachRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
   }
 }
 
 interface AppRouteRouteChildren {
+  AppCoachRoute: typeof AppCoachRoute
   AppParametresRoute: typeof AppParametresRoute
   AppStatistiquesRoute: typeof AppStatistiquesRoute
   AppTableauDeBordRoute: typeof AppTableauDeBordRoute
   AppTransactionsRoute: typeof AppTransactionsRoute
   AppTontinesIdRoute: typeof AppTontinesIdRoute
   AppTontinesIndexRoute: typeof AppTontinesIndexRoute
-  AppCoachRoute: typeof AppCoachRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppCoachRoute: AppCoachRoute,
   AppParametresRoute: AppParametresRoute,
   AppStatistiquesRoute: AppStatistiquesRoute,
   AppTableauDeBordRoute: AppTableauDeBordRoute,
   AppTransactionsRoute: AppTransactionsRoute,
   AppTontinesIdRoute: AppTontinesIdRoute,
   AppTontinesIndexRoute: AppTontinesIndexRoute,
-  AppCoachRoute: AppCoachRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

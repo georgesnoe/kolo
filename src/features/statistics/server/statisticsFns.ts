@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq, and, sql, count, sum, gte, lte } from "drizzle-orm";
+import { eq, and, count, sum, gte, lte, inArray } from "drizzle-orm";
 import { db } from "@/core/db/db";
 import {
   tontine,
@@ -66,7 +66,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .where(
           and(
             eq(tontinePayment.status, "paid"),
-            sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
+            inArray(tontineCycle.tontineId, tontineIds)
           )
         );
       totalSaved = parseFloat(paidResult[0]?.total || "0");
@@ -78,9 +78,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
       const memberResult = await db
         .select({ count: count() })
         .from(tontineMember)
-        .where(
-          sql`${tontineMember.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
-        );
+        .where(inArray(tontineMember.tontineId, tontineIds));
       activeMembers = memberResult[0]?.count || 0;
     }
 
@@ -93,7 +91,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .where(
           and(
             eq(tontineCycle.status, "completed"),
-            sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
+            inArray(tontineCycle.tontineId, tontineIds)
           )
         );
       completedCycles = cyclesResult[0]?.count || 0;
@@ -106,9 +104,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .select({ count: count() })
         .from(tontinePayment)
         .innerJoin(tontineCycle, eq(tontinePayment.cycleId, tontineCycle.id))
-        .where(
-          sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`
-        );
+        .where(inArray(tontineCycle.tontineId, tontineIds));
 
       const onTimePayments = await db
         .select({ count: count() })
@@ -116,9 +112,9 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
         .innerJoin(tontineCycle, eq(tontinePayment.cycleId, tontineCycle.id))
         .where(
           and(
-            sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`,
+            inArray(tontineCycle.tontineId, tontineIds),
             eq(tontinePayment.status, "paid"),
-            sql`${tontinePayment.paidAt} <= ${tontineCycle.dueDate}`
+            lte(tontinePayment.paidAt, tontineCycle.dueDate)
           )
         );
 
@@ -172,7 +168,7 @@ export const getStatistics = createServerFn({ method: "GET" }).handler(
           .where(
             and(
               eq(tontinePayment.status, "paid"),
-              sql`${tontineCycle.tontineId} IN (${sql.join(tontineIds.map(id => sql`${id}`), sql`, `)})`,
+              inArray(tontineCycle.tontineId, tontineIds),
               gte(tontinePayment.paidAt, monthStart),
               lte(tontinePayment.paidAt, monthEnd)
             )

@@ -30,9 +30,10 @@ export const Route = createFileRoute("/_app/statistiques")({
 const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
 
 function StatistiquesPage() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, error } = useQuery({
     queryKey: ["statistics"],
     queryFn: () => getStatistics(),
+    retry: 1,
   });
 
   const formatCurrency = (amount: number) => {
@@ -73,6 +74,22 @@ function StatistiquesPage() {
               <Skeleton className="h-64 w-full" />
             </CardContent>
           </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold">Statistiques</h1>
+          <p className="mt-1 text-muted-foreground">
+            Aperçu de vos finances et performances
+          </p>
+        </div>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+          Erreur lors du chargement des statistiques. Veuillez réessayer.
         </div>
       </div>
     );
