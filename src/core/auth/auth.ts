@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { reactStartCookies } from "better-auth/react-start";
 import * as schema from "@/core/db/schema";
 import { db } from "@/core/db/db";
 
@@ -22,5 +22,5 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,
   },
-  plugins: [tanstackStartCookies()]
+  plugins: [reactStartCookies()]
 });
