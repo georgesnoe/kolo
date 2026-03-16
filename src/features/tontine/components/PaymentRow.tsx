@@ -1,7 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IconCheck, IconClock, IconAlertCircle, IconX, IconLoader2 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useMarkPaymentPaid } from "../hooks/useTontine";
+import { markPaymentPaid } from "../server/tontineFns";
 import { cn } from "@/lib/utils";
 
 interface PaymentRowProps {
@@ -11,6 +12,7 @@ interface PaymentRowProps {
   status: string;
   paidAt: Date | null;
   canMarkPaid?: boolean;
+  tontineId?: string;
 }
 
 const statusConfig: Record<
@@ -50,8 +52,20 @@ export function PaymentRow({
   status,
   paidAt,
   canMarkPaid = false,
+  tontineId,
 }: PaymentRowProps) {
-  const markPaidMutation = useMarkPaymentPaid();
+  const queryClient = useQueryClient();
+
+  const markPaidMutation = useMutation({
+    mutationFn: () => markPaymentPaid({ data: { paymentId: id } }),
+    onSuccess: () => {
+      if (tontineId) {
+        queryClient.invalidateQueries({ queryKey: ["tontine", tontineId] });
+      }
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+
   const config = statusConfig[status] || statusConfig.pending;
 
   const formatCurrency = (value: string) => {
@@ -72,7 +86,7 @@ export function PaymentRow({
 
   const handleMarkPaid = async () => {
     try {
-      await markPaidMutation.mutateAsync({ data: { paymentId: id } });
+      await markPaidMutation.mutateAsync();
     } catch (error) {
       console.error("Failed to mark payment as paid:", error);
     }

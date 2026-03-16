@@ -133,7 +133,7 @@ export function ProfileForm({ profile: initialProfile }: ProfileFormProps) {
                     : "Expiré"}
             </p>
           </div>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" disabled title="Bientôt disponible">
             Mettre à niveau
           </Button>
         </div>

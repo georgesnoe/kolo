@@ -4,6 +4,7 @@ import {
   IconUsers,
   IconCreditCard,
   IconChartPie,
+  IconRobot,
   IconSettings,
   IconLogout,
   IconChevronLeft,
@@ -32,6 +33,11 @@ const navItems = [
     label: "Statistiques",
     href: "/statistiques",
     icon: IconChartPie,
+  },
+  {
+    label: "Coach IA",
+    href: "/coach",
+    icon: IconRobot,
   },
   {
     label: "Paramètres",

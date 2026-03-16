@@ -277,3 +277,44 @@ export const tontinePaymentRelations = relations(tontinePayment, ({ one }) => ({
     references: [tontineMember.id],
   }),
 }));
+
+// Notification enums
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "payment_due",
+  "payment_received",
+  "cycle_complete",
+  "member_joined",
+  "tontine_update",
+]);
+
+// Notifications table
+export const notification = pgTable(
+  "notification",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: notificationTypeEnum("type").notNull(),
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    read: boolean("read").default(false).notNull(),
+    tontineId: uuid("tontine_id").references(() => tontine.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("notification_userId_idx").on(table.userId),
+    index("notification_read_idx").on(table.read),
+  ],
+);
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  user: one(user, {
+    fields: [notification.userId],
+    references: [user.id],
+  }),
+  tontine: one(tontine, {
+    fields: [notification.tontineId],
+    references: [tontine.id],
+  }),
+}));

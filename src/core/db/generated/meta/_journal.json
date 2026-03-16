@@ -8,6 +8,13 @@
       "when": 1773625696241,
       "tag": "0000_loud_synch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773658191133,
+      "tag": "0001_woozy_magus",
+      "breakpoints": true
     }
   ]
 }

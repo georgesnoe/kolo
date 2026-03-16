@@ -20,6 +20,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTontinesIdRouteImport } from './routes/_app/tontines/$id'
 import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
 import { Route as AppStatistiquesRouteImport } from './routes/_app/statistiques'
+import { Route as AppCoachRouteImport } from './routes/_app/coach'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -75,6 +76,11 @@ const AppStatistiquesRoute = AppStatistiquesRouteImport.update({
   path: '/statistiques',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppCoachRoute = AppCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines/': typeof AppTontinesIndexRoute
+  '/coach': typeof AppCoachRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/tontines': typeof AppTontinesIndexRoute
+  '/coach': typeof AppCoachRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_app/tontines/$id': typeof AppTontinesIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/tontines/': typeof AppTontinesIndexRoute
+  '/_app/coach': typeof AppCoachRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines/'
+    | '/coach'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/tontines/$id'
     | '/api/auth/$'
     | '/tontines'
+    | '/coach'
   id:
     | '__root__'
     | '/'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/_app/tontines/$id'
     | '/api/auth/$'
     | '/_app/tontines/'
+    | '/_app/coach'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -241,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStatistiquesRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/coach': {
+      id: '/_app/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof AppCoachRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -251,6 +270,7 @@ interface AppRouteRouteChildren {
   AppTransactionsRoute: typeof AppTransactionsRoute
   AppTontinesIdRoute: typeof AppTontinesIdRoute
   AppTontinesIndexRoute: typeof AppTontinesIndexRoute
+  AppCoachRoute: typeof AppCoachRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -260,6 +280,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppTransactionsRoute: AppTransactionsRoute,
   AppTontinesIdRoute: AppTontinesIdRoute,
   AppTontinesIndexRoute: AppTontinesIndexRoute,
+  AppCoachRoute: AppCoachRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
