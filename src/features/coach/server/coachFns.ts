@@ -19,18 +19,23 @@ interface ChatMessage {
 export const chatWithCoach = createServerFn({ method: "POST" })
   .inputValidator((data: { message: string; history: ChatMessage[] }) => data)
   .handler(async ({ data }) => {
-    await getAuthSession();
+    try {
+      await getAuthSession();
 
-    const systemContext = `Tu es le coach financier de Kolo, une application de finance collective francophone.
+      const systemContext = `Tu es le coach financier de Kolo, une application de finance collective francophone.
 Tu aides les utilisateurs avec leurs questions sur les tontines, l'épargne collective, et la gestion financière personnelle.
 Réponds en français, de manière claire et bienveillante. Sois concis mais utile.`;
 
-    const fullMessage = `${systemContext}\n\nHistorique récent:\n${data.history
-      .slice(-5)
-      .map((m) => `${m.role === "user" ? "Utilisateur" : "Coach"}: ${m.content}`)
-      .join("\n")}\n\nUtilisateur: ${data.message}`;
+      const fullMessage = `${systemContext}\n\nHistorique récent:\n${data.history
+        .slice(-5)
+        .map((m) => `${m.role === "user" ? "Utilisateur" : "Coach"}: ${m.content}`)
+        .join("\n")}\n\nUtilisateur: ${data.message}`;
 
-    const response = await askCoach(fullMessage);
+      const response = await askCoach(fullMessage);
 
-    return { response };
+      return { response };
+    } catch (error) {
+      console.error("[chatWithCoach] Error:", error);
+      throw error;
+    }
   });
