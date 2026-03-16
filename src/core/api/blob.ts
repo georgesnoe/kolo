@@ -2,7 +2,7 @@ import { put, del } from '@vercel/blob';
 
 const TOKEN = process.env.BLOB_READ_WRITE_TOKEN as string;
 
-// Upload a file — returns the pathname (store this in the database, not the full URL)
+// Upload a file — returns the full public URL
 export async function uploadFile(
   pathname: string,
   body: Buffer | Blob | ReadableStream,
@@ -13,7 +13,7 @@ export async function uploadFile(
     token: TOKEN,
     contentType,
   });
-  return result.pathname;
+  return result.url;
 }
 
 // Delete a file

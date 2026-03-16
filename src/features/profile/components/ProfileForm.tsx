@@ -56,7 +56,7 @@ export function ProfileForm({ profile: initialProfile }: ProfileFormProps) {
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
         <AvatarUpload
-          currentAvatarKey={initialProfile.avatarBlobKey}
+          currentAvatarUrl={initialProfile.avatarBlobKey}
           displayName={initialProfile.displayName}
           onUpload={async (file, contentType) => {
             await avatarMutation.mutateAsync({ file, contentType });

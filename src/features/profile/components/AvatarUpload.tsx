@@ -4,19 +4,17 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 interface AvatarUploadProps {
-  currentAvatarKey: string | null;
+  currentAvatarUrl: string | null;
   displayName: string | null;
   onUpload: (file: string, contentType: string) => Promise<void>;
 }
 
-export function AvatarUpload({ currentAvatarKey, displayName, onUpload }: AvatarUploadProps) {
+export function AvatarUpload({ currentAvatarUrl, displayName, onUpload }: AvatarUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const avatarUrl = currentAvatarKey
-    ? `https://blob.vercel-storage.com/${currentAvatarKey}`
-    : null;
+  const avatarUrl = currentAvatarUrl;
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

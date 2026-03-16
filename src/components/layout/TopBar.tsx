@@ -64,9 +64,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const avatarUrl = profile?.avatarBlobKey
-    ? `https://blob.vercel-storage.com/${profile.avatarBlobKey}`
-    : null;
+  const avatarUrl = profile?.avatarBlobKey || null;
 
   const unreadCount = notificationData?.unreadCount || 0;
   const notifications = notificationData?.notifications || [];
